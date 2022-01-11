@@ -61,7 +61,7 @@ func run(log *zap.SugaredLogger) error {
 	app := gin.Default()
 	app.MaxMultipartMemory = 8 << 20
 	app.Static("/", "./public")
-	Router.Routes(app)
+	Router.Routes(app, log)
 
 	// =====================================================
 	// Open Database Connection
