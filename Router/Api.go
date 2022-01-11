@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"golang-boilerplate/Controller"
+	"net/http"
 )
 
 const (
@@ -13,15 +14,15 @@ const (
 
 func Routes(app *gin.Engine, log *zap.SugaredLogger) {
 	router := app.Group(prefix)
+	router.GET("", func(ctx *gin.Context) {
+		ctx.JSON(http.StatusOK, gin.H{
+			"message": "pong",
+		})
+	})
 
 	bucketController := Controller.NewBucketController(log)
 	bucket := router.Group(bucketPostfix)
 	{
 		bucket.POST("/", bucketController.CreateBucket)
-		bucket.GET("/", bucketController.ListBucket)
-		bucket.GET("/:id", bucketController.GetOneBucket)
-		bucket.PUT("/:id", bucketController.UpdateBucket)
-		bucket.PATCH("/:id", bucketController.ToggleActiveBucket)
-		bucket.DELETE("/:id", bucketController.DeleteBucket)
 	}
 }

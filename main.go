@@ -5,11 +5,11 @@ import (
 	"golang-boilerplate/Router"
 	"golang-boilerplate/Service"
 	"os"
-	"runtime"
 	"time"
 
 	"github.com/caarlos0/env/v6"
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 	"go.uber.org/automaxprocs/maxprocs"
 	"go.uber.org/zap"
 )
@@ -30,10 +30,9 @@ func main() {
 
 func run(log *zap.SugaredLogger) error {
 	// Set MaxProcss
-	if _, err := maxprocs.Set(); err != nil {
-		return fmt.Errorf("failed to set maxprocs: %w", err)
+	if _, maxProcessorError := maxprocs.Set(); maxProcessorError != nil {
+		return fmt.Errorf("failed to set maxprocs: %w", maxProcessorError)
 	}
-	log.Infow("startup", "GOMAXPROCS", runtime.GOMAXPROCS(0))
 
 	// Read Config from Environment Variables
 	cfg := struct {
@@ -60,7 +59,7 @@ func run(log *zap.SugaredLogger) error {
 	// App Starting
 	app := gin.Default()
 	app.MaxMultipartMemory = 8 << 20
-	app.Static("/", "./public")
+	app.Static("/assets/", "./public")
 	Router.Routes(app, log)
 
 	// =====================================================
@@ -77,8 +76,15 @@ func run(log *zap.SugaredLogger) error {
 	if err != nil {
 		return fmt.Errorf("opening Database: %w", err)
 	}
+
+	errorChannel := make(chan error)
+	func() {
+		log.Infow("Project Running On PORT")
+		errorChannel <- app.Run(cfg.Api.ApiHost)
+	}()
+
 	defer func() {
-		log.Infow("shutdown", "status", "stopping Database support", "host", cfg.DB.Host)
+		log.Infow("shutdown", "status", "here", "host", cfg.DB.Host)
 		db.Close()
 	}()
 
