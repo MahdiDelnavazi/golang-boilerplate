@@ -21,25 +21,21 @@ type DatabaseConfig struct {
 
 // DatabaseOpen Open knows how to open a database connection based on the configuration.
 func DatabaseOpen(cfg DatabaseConfig) (*sqlx.DB, error) {
-	//sslMode := "require"
-	//if cfg.DisableTLS {
-	//	sslMode = "disable"
-	//}
-
-	q := make(url.Values)
-	q.Set("sslmode", "disable")
-	q.Set("timezone", "utc")
-
-	u := url.URL{
-		Scheme: "postgres",
-		User:   url.User(cfg.User),
-		//User:     url.UserPassword(cfg.User, cfg.Password),
-		Host:     "localhost",
-		Path:     "test",
-		RawQuery: q.Encode(),
+	sslMode := "require"
+	if cfg.DisableTLS {
+		sslMode = "disable"
 	}
 
-	db, err := sqlx.Open("postgres", u.String())
+	q := make(url.Values)
+	q.Set("sslmode", sslMode)
+	q.Set("timezone", "utc")
+	q.Set("user", cfg.User)
+	q.Set("password", cfg.Password)
+	q.Set("dbname", cfg.Name)
+
+	databaseConfig := strings.Replace(q.Encode(), "&", " ", -1)
+	fmt.Println("TESTSSTSTST: ", databaseConfig)
+	db, err := sqlx.Open("postgres", databaseConfig)
 	if err != nil {
 		return nil, err
 	}
