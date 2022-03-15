@@ -21,7 +21,7 @@ type DatabaseConfig struct {
 
 // DatabaseOpen Open knows how to open a database connection based on the configuration.
 func DatabaseOpen(cfg DatabaseConfig) (*sqlx.DB, error) {
-	sslMode := "require"
+	sslMode := "disable"
 	if cfg.DisableTLS {
 		sslMode = "disable"
 	}

@@ -5,9 +5,9 @@ import (
 	"time"
 )
 
-type Bucket struct {
+type User struct {
 	Id        uuid.UUID
-	Name      string
+	UserName  string
 	Active    bool
 	CreatedAt time.Time
 	UpdatedAt time.Time

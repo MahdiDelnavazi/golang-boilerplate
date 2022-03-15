@@ -9,6 +9,7 @@ import (
 	"golang-boilerplate/Config"
 	"golang-boilerplate/Router"
 	"golang-boilerplate/Service"
+	"log"
 )
 
 func main() {
@@ -30,7 +31,7 @@ func main() {
 
 	// =====================================================
 	// Open Database Connection
-	database, _ := Service.DatabaseOpen(Service.DatabaseConfig{
+	database, err := Service.DatabaseOpen(Service.DatabaseConfig{
 		User:         config.DB.User,
 		Password:     config.DB.Password,
 		Host:         config.DB.Host,
@@ -39,6 +40,10 @@ func main() {
 		MaxOpenConns: config.DB.MaxOpenConns,
 		DisableTLS:   config.DB.DisableTLS,
 	})
+	if err != nil {
+		log.Fatal("cannot connect to db: ", err)
+	}
+
 	logger.Infow("Project database, ", "database", database)
 
 	defer func() {

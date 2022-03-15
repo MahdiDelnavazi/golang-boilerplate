@@ -10,10 +10,10 @@ type EnvironmentConfig struct {
 		ShutdownTimeout time.Duration `env:"API_SHUT_DOWN_TIMEOUT" env-default:"5s"`
 	}
 	DB struct {
-		User         string `env:"DB_USER" env-default:"postgres"`
-		Password     string `env:"DB_PASSWORD" env-default:"postgres"`
+		User         string `env:"DB_USER" env-default:"root"`
+		Password     string `env:"DB_PASSWORD" env-default:"secret"`
 		Host         string `env:"DB_HOST" env-default:"localhost"`
-		Name         string `env:"DB_NAME" env-default:"postgres"`
+		Name         string `env:"DB_NAME" env-default:"supnext_pr2"`
 		MaxIdleConns int    `env:"DB_MAX_IDLE_CONNS" env-default:"10"`
 		MaxOpenConns int    `env:"DB_MAX_OPEN_CONNS" env-default:"100"`
 		DisableTLS   bool   `env:"DB_DISABLE_TLS" env-default:"false"`
