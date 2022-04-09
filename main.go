@@ -59,7 +59,7 @@ func main() {
 
 	errorChannel := make(chan error)
 	func() {
-		logger.Infow("Project Running On PORT")
+		logger.Infow("Project Running On PORT", config.Api.ApiHost)
 		errorChannel <- app.Run(config.Api.ApiHost)
 	}()
 }
