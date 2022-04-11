@@ -5,6 +5,7 @@ CREATE TABLE "User"
 (
     "Id"          uuid                DEFAULT uuid_generate_v4(),
     "UserName"    varchar     NOT NULL,
+    "Password"    varchar     NOT NULL,
     "TicketCount" integer,
     "CreatedAt"   timestamptz NOT NULL DEFAULT (now()),
     "UpdatedAt"   timestamptz NOT NULL DEFAULT (now()),

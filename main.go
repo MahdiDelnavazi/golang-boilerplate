@@ -7,6 +7,7 @@ import (
 	_ "github.com/lib/pq"
 	"go.uber.org/automaxprocs/maxprocs"
 	"golang-boilerplate/Config"
+	"golang-boilerplate/Middleware/token"
 	"golang-boilerplate/Router"
 	"golang-boilerplate/Service"
 	"log"
@@ -51,11 +52,16 @@ func main() {
 		database.Close()
 	}()
 
+	tokenMaker, err := token.NewPasetoMaker(config.Token.TokenSymmetricKey)
+	if err != nil {
+		log.Fatal("cannot create token: %W", err)
+	}
+
 	// App Starting
 	app := gin.Default()
 	app.MaxMultipartMemory = 8 << 20
 	app.Static("/assets/", "./public")
-	Router.Routes(app, logger, database)
+	Router.Routes(app, logger, database, tokenMaker)
 
 	errorChannel := make(chan error)
 	func() {

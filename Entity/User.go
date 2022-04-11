@@ -8,6 +8,7 @@ import (
 type User struct {
 	Id        uuid.UUID
 	UserName  string
+	Password  string
 	Active    bool
 	CreatedAt time.Time
 	UpdatedAt time.Time

@@ -5,17 +5,20 @@ import (
 	"go.uber.org/zap"
 	"golang-boilerplate/DTO/Request/User"
 	User2 "golang-boilerplate/DTO/Response/User"
+	"golang-boilerplate/Middleware/token"
 	"golang-boilerplate/Repository"
 	"log"
+	"time"
 )
 
 type UserService struct {
 	userRepository *Repository.UserRepository
 	logger         *zap.SugaredLogger
+	token          token.Maker
 }
 
-func NewUserService(logger *zap.SugaredLogger, userRepository *Repository.UserRepository) *UserService {
-	return &UserService{logger: logger, userRepository: userRepository}
+func NewUserService(logger *zap.SugaredLogger, userRepository *Repository.UserRepository, token token.Maker) *UserService {
+	return &UserService{logger: logger, userRepository: userRepository, token: token}
 }
 
 func (userService UserService) Create(createUserRequest User.CreateUserRequest) (User2.CreateUserResponse, error) {
@@ -39,6 +42,29 @@ func (userService UserService) Create(createUserRequest User.CreateUserRequest) 
 	}
 	// we need a transformer
 	return User2.CreateUserResponse{UserName: userResponse.UserName}, nil
+}
+
+func (userService UserService) LoginUser(loginUserRequest User.LoginUserRequest) (User2.LoginUserResponse, error) {
+	// validate username len and not empty
+	validationError := ValidationCheck(loginUserRequest)
+
+	if validationError != nil {
+		return User2.LoginUserResponse{}, validationError
+	}
+
+	user, getUserError := userService.userRepository.LoginUser(loginUserRequest)
+	if getUserError != nil {
+		return User2.LoginUserResponse{}, getUserError
+	}
+
+	//create new token for login
+	accessToken, err := userService.token.CreateToken(loginUserRequest.UserName, time.Hour)
+	if err != nil {
+		return User2.LoginUserResponse{}, err
+	}
+
+	// we need a transformer
+	return User2.LoginUserResponse{UserName: user.UserName, AccessToken: accessToken}, nil
 }
 
 func (userService UserService) GetUser(getUserRequest User.GetUserRequest) (User2.GetUserResponse, error) {

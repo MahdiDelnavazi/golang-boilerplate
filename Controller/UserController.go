@@ -43,3 +43,20 @@ func (userControler *UserController) CreateUser(context *gin.Context) {
 	response := Response.GeneralResponse{Error: false, Message: "user have been created", Data: User2.CreateUserResponse{UserName: userResponse.UserName}}
 	context.JSON(http.StatusOK, gin.H{"response": response})
 }
+
+func (userControler *UserController) LoginUser(context *gin.Context) {
+	var userRequest User.LoginUserRequest
+	Helper.Decode(context.Request, &userRequest)
+
+	userResponse, responseError := userControler.userService.LoginUser(userRequest)
+
+	if responseError != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"response": responseError})
+		return
+	}
+
+	// all ok
+	// create general response
+	response := Response.GeneralResponse{Error: false, Message: "your login is successful", Data: User2.LoginUserResponse{UserName: userResponse.UserName, AccessToken: userResponse.AccessToken}}
+	context.JSON(http.StatusOK, gin.H{"response": response})
+}

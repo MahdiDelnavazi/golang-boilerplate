@@ -9,6 +9,10 @@ type EnvironmentConfig struct {
 		WriteTimeOut    time.Duration `env:"API_WRITE_TIMEOUT" env-default:"5s"`
 		ShutdownTimeout time.Duration `env:"API_SHUT_DOWN_TIMEOUT" env-default:"5s"`
 	}
+	Token struct {
+		TokenSymmetricKey   string        `env:"TOKEN_SYMMETRIC_KEY"`
+		AccessTokenDuration time.Duration `env:"ACCESS_TOKEN_DURATION"`
+	}
 	DB struct {
 		User         string `env:"DB_USER" env-default:"root"`
 		Password     string `env:"DB_PASSWORD" env-default:"secret"`
