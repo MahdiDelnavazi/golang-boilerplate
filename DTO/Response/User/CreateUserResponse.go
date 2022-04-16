@@ -1,5 +1,5 @@
 package User
 
 type CreateUserResponse struct {
-	UserName string `json:"userName" binding:"required"`
+	UserName string `json:"username" binding:"required"`
 }

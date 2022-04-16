@@ -5,6 +5,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 	"golang-boilerplate/Controller"
+	"golang-boilerplate/Middleware"
 	"golang-boilerplate/Middleware/token"
 	"golang-boilerplate/Repository"
 	"golang-boilerplate/Service"
@@ -28,22 +29,23 @@ func Routes(app *gin.Engine, log *zap.SugaredLogger, db *sqlx.DB, token token.Ma
 	newUserService := Service.NewUserService(log, newUserRepository, token)
 	newUserController := Controller.NewUserController(log, newUserService)
 
-	newBucketRepository := Repository.NewBucketRepository(log, db)
-	newBucketService := Service.NewBucketService(log, newBucketRepository)
-	bucketController := Controller.NewBucketController(log, newBucketService)
+	//newBucketRepository := Repository.NewBucketRepository(log, db)
+	//newBucketService := Service.NewBucketService(log, newBucketRepository)
+	//bucketController := Controller.NewBucketController(log, newBucketService)
 
 	newTicketRepository := Repository.NewTicketRepository(log, db)
 	newTicketService := Service.NewTicketService(log, newUserService, newTicketRepository)
 	newTicketController := Controller.NewTicketController(log, newTicketService)
 
+	authRoutes := router.Group("/").Use(Middleware.AuthMiddleware(token))
 	router.POST("/createUser", newUserController.CreateUser)
 	router.POST("/loginUser", newUserController.LoginUser)
-	router.POST("/addTicket", newTicketController.CreateTicket)
-	bucket := router.Group(bucketPostfix)
-	{
-		bucket.POST("/", bucketController.CreateBucket)
-		bucket.POST("/createUser", newUserController.CreateUser)
-		bucket.POST("/loginUser", newUserController.LoginUser)
-		bucket.POST("/addTicket", newTicketController.CreateTicket)
-	}
+	authRoutes.POST("/addTicket", newTicketController.CreateTicket)
+	//bucket := router.Group(bucketPostfix)
+	//{
+	//	bucket.POST("/", bucketController.CreateBucket)
+	//	bucket.POST("/createUser", newUserController.CreateUser)
+	//	bucket.POST("/loginUser", newUserController.LoginUser)
+	//	bucket.POST("/addTicket", newTicketController.CreateTicket)
+	//}
 }

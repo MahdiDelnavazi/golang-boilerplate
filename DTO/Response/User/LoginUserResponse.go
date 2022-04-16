@@ -1,6 +1,6 @@
 package User
 
 type LoginUserResponse struct {
-	UserName    string `json:"userName" validate:"required,min=3"`
-	AccessToken string `json:"AccessToken" binding:"required"`
+	UserName    string `json:"username" validate:"required,min=3"`
+	AccessToken string `json:"accessToken" binding:"required"`
 }

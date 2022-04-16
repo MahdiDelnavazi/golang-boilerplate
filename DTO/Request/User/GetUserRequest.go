@@ -1,5 +1,5 @@
 package User
 
 type GetUserRequest struct {
-	UserName string `json:"userName" validate:"required,min=3"`
+	UserName string `json:"username" validate:"required,min=3"`
 }
