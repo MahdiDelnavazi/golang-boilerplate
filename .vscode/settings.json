@@ -1,0 +1,14 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "postgres db1",
+            "database": "supnext_pr2",
+            "username": "root",
+            "password": "secret"
+        }
+    ]
+}
