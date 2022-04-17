@@ -3,6 +3,7 @@ package Middleware
 import (
 	"errors"
 	"fmt"
+	"github.com/go-redis/redis"
 	"golang-boilerplate/Middleware/token"
 	"net/http"
 	"strings"
@@ -17,10 +18,18 @@ const (
 )
 
 // AuthMiddleware creates a gin middleware for authorization
-func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
+func AuthMiddleware(tokenMaker token.Maker, redis *redis.Client) gin.HandlerFunc {
 	return func(ctx *gin.Context) {
 		authorizationHeader := ctx.GetHeader(authorizationHeaderKey)
 
+		//val2 , _ :=redis.Get("token").Result()
+		//fmt.Println("redis resuuuuult : " , val2)
+		//if err != nil {
+		//	ctx.AbortWithStatusJSON(http.StatusInternalServerError, gin.H{"errors": err})
+		//	return
+		//}
+
+		fmt.Println("this is token ------------>", authorizationHeader)
 		if len(authorizationHeader) == 0 {
 			err := errors.New("authorization header is not provided")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"errors": err})
@@ -44,6 +53,13 @@ func AuthMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		accessToken := fields[1]
 		payload, err := tokenMaker.VerifyToken(accessToken)
 		if err != nil {
+			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"errors": err})
+			return
+		}
+
+		val, _ := redis.Get(payload.Username).Result()
+		if val == accessToken {
+			err := fmt.Errorf("token is expired")
 			ctx.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"errors": err})
 			return
 		}

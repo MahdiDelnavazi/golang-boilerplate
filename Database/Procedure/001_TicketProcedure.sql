@@ -1,10 +1,10 @@
-CREATE OR REPLACE FUNCTION newticket(UserId uuid, Subject varchar, Message varchar, Image varchar, Like1 boolean)
+CREATE OR REPLACE FUNCTION newticket(UserId1 uuid, Subject1 varchar, Message1 varchar, Image1 varchar, Like1 boolean)
     RETURNS TABLE
             (
-                Subject1 varchar,
-                Message1 varchar,
-                Image1 varchar,
-                Like2 boolean
+                Subject varchar,
+                Message text,
+                Image varchar,
+                Like boolean
             )
 
 AS
@@ -13,7 +13,7 @@ BEGIN
 
     RETURN QUERY
         INSERT INTO "Ticket" ("UserId", "Subject", "Message", "Image", "Like")
-            VALUES (UserId, Subject, Message, Image, Like1)
+            VALUES (UserId1, Subject1, Message1, Image1, Like1)
             RETURNING "Subject","Message","Image","Like";
 
 END

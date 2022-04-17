@@ -15,7 +15,7 @@ migratedown:
 
 
 redis:
-	docker run --name supnex_pr2-redis -p 6379:6379 -d redis
+	docker run --name supnex_pr2_redis -p 6379:6379 -d redis
 
 test:
 	go test -v -cover ./...

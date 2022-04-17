@@ -2,16 +2,16 @@ package main
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis"
+	"github.com/ilyakaznacheev/cleanenv"
+	_ "github.com/lib/pq"
+	"go.uber.org/automaxprocs/maxprocs"
 	"golang-boilerplate/Config"
 	"golang-boilerplate/Middleware/token"
 	"golang-boilerplate/Router"
 	"golang-boilerplate/Service"
 	"log"
-
-	"github.com/gin-gonic/gin"
-	"github.com/ilyakaznacheev/cleanenv"
-	_ "github.com/lib/pq"
-	"go.uber.org/automaxprocs/maxprocs"
 )
 
 func main() {
@@ -58,11 +58,20 @@ func main() {
 		log.Fatal("cannot create token: %W", err)
 	}
 
+	client := redis.NewClient(&redis.Options{
+		Addr:     "localhost:6379",
+		Password: "",
+		DB:       0,
+	})
+
+	pong, err := client.Ping().Result()
+	fmt.Println(pong, err)
+
 	// App Starting
 	app := gin.Default()
 	app.MaxMultipartMemory = 8 << 20
 	app.Static("/assets/", "./public")
-	Router.Routes(app, logger, database, tokenMaker)
+	Router.Routes(app, logger, database, tokenMaker, client)
 
 	errorChannel := make(chan error)
 	func() {

@@ -11,6 +11,6 @@ type Ticket struct {
 	Like      bool
 	Subject   string
 	Message   string
-	Image     []byte
+	Image     string
 	CreatedAt time.Time
 }

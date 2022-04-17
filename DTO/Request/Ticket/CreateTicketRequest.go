@@ -8,5 +8,5 @@ type CreateTicketRequest struct {
 	Subject  string    `json:"subject" validate:"required"`
 	Message  string    `json:"message" validate:"required"`
 	Like     bool      `json:"like" validate:"required"`
-	Image    []byte    `json:"image"`
+	Image    string    `json:"image"`
 }

@@ -1,7 +1,6 @@
 package Repository
 
 import (
-	"fmt"
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 	"golang-boilerplate/DTO/Request/Ticket"
@@ -24,8 +23,7 @@ func (TicketRepository *TicketRepository) Create(request Ticket.CreateTicketRequ
 	ticket := Entity.Ticket{}
 	queryError := TicketRepository.database.Get(&ticket, `SELECT * FROM newTicket($1 , $2 , $3 , $4, $5)`,
 		request.UserId, request.Subject, request.Message, request.Image, request.Like)
-	fmt.Println("after run query ticket", ticket)
-	fmt.Println("after run query ticket error ", queryError)
+
 	if queryError != nil {
 		return Entity.Ticket{}, nil
 	}
