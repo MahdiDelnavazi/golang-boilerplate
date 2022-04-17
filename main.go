@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/ilyakaznacheev/cleanenv"
-	_ "github.com/lib/pq"
-	"go.uber.org/automaxprocs/maxprocs"
 	"golang-boilerplate/Config"
 	"golang-boilerplate/Middleware/token"
 	"golang-boilerplate/Router"
 	"golang-boilerplate/Service"
 	"log"
+
+	"github.com/gin-gonic/gin"
+	"github.com/ilyakaznacheev/cleanenv"
+	_ "github.com/lib/pq"
+	"go.uber.org/automaxprocs/maxprocs"
 )
 
 func main() {
